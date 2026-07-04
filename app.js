@@ -820,12 +820,28 @@ async function generateShareLink() {
     const compressed = await compressData(state);
     const shareUrl = `${window.location.origin}${window.location.pathname}#data=${compressed}`;
     
+    let displayUrl = shareUrl;
+    
+    // We try to shorten it using is.gd via corsproxy.io
+    try {
+        btn.innerHTML = 'Shortening...';
+        const response = await fetch("https://corsproxy.io/?" + encodeURIComponent("https://is.gd/create.php?format=json&url=" + encodeURIComponent(shareUrl)));
+        const data = await response.json();
+        if (data.shorturl) {
+            displayUrl = data.shorturl;
+        } else if (data.errormessage) {
+            console.warn("Shortener error response:", data.errormessage);
+        }
+    } catch (e) {
+        console.warn("Failed to reach URL shortener API, falling back to long URL", e);
+    }
+    
     btn.innerHTML = originalText;
     
     // Open share modal
     const modal = document.getElementById('share-modal');
     const urlInput = document.getElementById('share-url-input');
-    urlInput.value = shareUrl;
+    urlInput.value = displayUrl;
     modal.classList.add('active');
 }
 
