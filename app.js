@@ -840,28 +840,20 @@ async function generateShareLink() {
     const shareUrl = `${window.location.origin}${window.location.pathname}#data=${compressed}`;
     
     let displayUrl = shareUrl;
-    
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    if (isLocalhost) {
-        // is.gd rejects local/localhost URLs. We mock the shortened link for local testing.
-        displayUrl = "https://is.gd/Sona2804";
-    } else {
-        // We try to shorten it using is.gd JSONP (bypass CORS) on production
-        try {
-            btn.innerHTML = 'Shortening...';
-            const callbackName = "isgd_" + Math.random().toString(36).substr(2, 9);
-            const urlToCall = "https://is.gd/create.php?format=jsonp&url=" + encodeURIComponent(shareUrl);
-            
-            const data = await fetchJSONP(urlToCall, callbackName);
-            if (data && data.shorturl) {
-                displayUrl = data.shorturl;
-            } else if (data && data.errormessage) {
-                console.warn("Shortener error response:", data.errormessage);
-            }
-        } catch (e) {
-            console.warn("Failed to reach URL shortener API, falling back to long URL", e);
+    // We try to shorten it using is.gd JSONP (bypass CORS)
+    try {
+        btn.innerHTML = 'Shortening...';
+        const callbackName = "isgd_" + Math.random().toString(36).substr(2, 9);
+        const urlToCall = "https://is.gd/create.php?format=jsonp&url=" + encodeURIComponent(shareUrl);
+        
+        const data = await fetchJSONP(urlToCall, callbackName);
+        if (data && data.shorturl) {
+            displayUrl = data.shorturl;
+        } else if (data && data.errormessage) {
+            console.warn("Shortener error response:", data.errormessage);
         }
+    } catch (e) {
+        console.warn("Failed to reach URL shortener API, falling back to long URL", e);
     }
     
     btn.innerHTML = originalText;
