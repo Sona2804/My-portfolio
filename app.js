@@ -809,28 +809,6 @@ function setupNavInteractions() {
     });
 }
 
-// JSONP Helper for CORS-free API calls
-function fetchJSONP(url, callbackName) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = `${url}&callback=${callbackName}`;
-        
-        window[callbackName] = (data) => {
-            resolve(data);
-            script.remove();
-            delete window[callbackName];
-        };
-        
-        script.onerror = () => {
-            reject(new Error("JSONP request failed"));
-            script.remove();
-            delete window[callbackName];
-        };
-        
-        document.body.appendChild(script);
-    });
-}
-
 async function generateShareLink() {
     const btn = document.querySelector('[onclick="generateShareLink()"]');
     const originalText = btn.innerHTML;
@@ -840,20 +818,43 @@ async function generateShareLink() {
     const shareUrl = `${window.location.origin}${window.location.pathname}#data=${compressed}`;
     
     let displayUrl = shareUrl;
-    // We try to shorten it using is.gd JSONP (bypass CORS)
+    
+    // 1. Try Sniplinks POST API (CORS enabled, supports long POST payloads)
     try {
         btn.innerHTML = 'Shortening...';
-        const callbackName = "isgd_" + Math.random().toString(36).substr(2, 9);
-        const urlToCall = "https://is.gd/create.php?format=jsonp&url=" + encodeURIComponent(shareUrl);
-        
-        const data = await fetchJSONP(urlToCall, callbackName);
-        if (data && data.shorturl) {
-            displayUrl = data.shorturl;
-        } else if (data && data.errormessage) {
-            console.warn("Shortener error response:", data.errormessage);
+        const response = await fetch('https://sniplinks.in/api/public/v1/shorten', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ url: shareUrl })
+        });
+        const data = await response.json();
+        if (data && data.short_url) {
+            displayUrl = data.short_url;
+        } else {
+            throw new Error("Sniplinks failed, trying backup");
         }
     } catch (e) {
-        console.warn("Failed to reach URL shortener API, falling back to long URL", e);
+        console.warn("Sniplinks failed, trying CleanURI via CORS proxy...", e);
+        
+        // 2. Try CleanURI POST API as backup via CORS proxy
+        try {
+            const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://cleanuri.com/api/v1/shorten'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ url: shareUrl })
+            });
+            const data = await response.json();
+            if (data && data.result_url) {
+                displayUrl = data.result_url;
+            }
+        } catch (err) {
+            console.warn("CleanURI backup failed, using long URL", err);
+        }
     }
     
     btn.innerHTML = originalText;
