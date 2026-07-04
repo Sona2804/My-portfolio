@@ -812,8 +812,8 @@ function setupNavInteractions() {
 // ----------------------------------------------------
 // Toolbar / Control Actions (Editor UI)
 // ----------------------------------------------------
-async function generateShareLink() {
-    const btn = document.querySelector('[onclick="generateShareLink()"]');
+async function generateShareLink(forceCustom = false) {
+    const btn = document.querySelector('[onclick="generateShareLink()"]') || document.querySelector('[onclick="generateShareLink(true)"]');
     const originalText = btn.innerHTML;
     btn.innerHTML = 'Compiling...';
     
@@ -822,18 +822,34 @@ async function generateShareLink() {
     
     let displayUrl = shareUrl;
     
-    // We try to shorten it using is.gd via corsproxy.io
+    const aliasInput = document.getElementById('custom-alias-input');
+    const customAlias = aliasInput ? aliasInput.value.trim().replace(/\s+/g, '_') : '';
+    
+    let apiUrl = "https://is.gd/create.php?format=json&url=" + encodeURIComponent(shareUrl);
+    if (customAlias) {
+        apiUrl += "&shorturl=" + encodeURIComponent(customAlias);
+    }
+    
     try {
         btn.innerHTML = 'Shortening...';
-        const response = await fetch("https://corsproxy.io/?" + encodeURIComponent("https://is.gd/create.php?format=json&url=" + encodeURIComponent(shareUrl)));
+        const response = await fetch("https://corsproxy.io/?" + encodeURIComponent(apiUrl));
         const data = await response.json();
         if (data.shorturl) {
             displayUrl = data.shorturl;
+            if (forceCustom) {
+                alert("🎉 Short link created successfully!");
+            }
         } else if (data.errormessage) {
             console.warn("Shortener error response:", data.errormessage);
+            if (forceCustom) {
+                alert("❌ Custom alias is already taken or invalid. Try a different name!");
+            }
         }
     } catch (e) {
         console.warn("Failed to reach URL shortener API, falling back to long URL", e);
+        if (forceCustom) {
+            alert("❌ Network error connecting to shortening server.");
+        }
     }
     
     btn.innerHTML = originalText;

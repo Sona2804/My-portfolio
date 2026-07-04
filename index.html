@@ -236,9 +236,13 @@
                 <span class="modal-close" onclick="closeModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <p style="font-size: 0.9rem; color: var(--text-secondary);">
-                    Your customized edits have been compressed and encoded into the URL. Copy this link to share your portfolio with clients in <strong>Read-Only</strong> mode.
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">
+                    Share your portfolio in <strong>Read-Only</strong> mode. Enter a custom alias below (e.g. <code>sonali_deb_portfolio</code>) to make the link readable, then click Shorten:
                 </p>
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <input type="text" id="custom-alias-input" placeholder="e.g. sonali_deb" class="add-skill-input" style="padding: 10px;">
+                    <button class="btn btn-primary" style="font-size: 0.8rem; padding: 10px 16px;" onclick="generateShareLink(true)">Shorten</button>
+                </div>
                 <div class="url-box">
                     <input type="text" id="share-url-input" class="url-input" readonly>
                     <button id="copy-btn" class="btn btn-primary btn-copy" onclick="copyShareUrl()">Copy</button>
