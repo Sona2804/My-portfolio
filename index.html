@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonali Deb | AI & ML Engineer | Portfolio</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Professional portfolio of Sonali Deb, Computer Science & Engineering professional specializing in AI & Machine Learning, multi-agent orchestration layers, and computer vision.">
+    <meta name="keywords" content="Sonali Deb, AI Engineer, Machine Learning, Data Science, Freelancer, Computer Vision, RAG, Multi-Agent Systems">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Backdrop Decorative Blobs -->
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Persistent Editor Control Bar (Hidden on client side) -->
+    <div id="control-bar" class="glass-panel" style="display: none;">
+        <div class="editor-badge">
+            <span style="font-size: 1rem;">✍️</span> Portfolio Editor
+        </div>
+        <div class="control-buttons">
+            <button id="preview-btn" class="btn btn-secondary" onclick="togglePreview()">👁️ Preview</button>
+            <button class="btn btn-primary" onclick="generateShareLink()">🔗 Get Share Link</button>
+            <button class="btn btn-danger" onclick="resetTemplate()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="container" id="home">
+        <a href="#" class="logo">SD<span style="color: var(--sweet-pink-hover);">.</span></a>
+        
+        <button class="menu-btn" id="menu-btn" aria-label="Toggle Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#showcase">UI/UX</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#connect" onclick="toggleConnectDrawer(); return false;" class="btn btn-secondary" style="padding: 6px 16px; border-radius: 20px;">Let's Connect</a></li>
+        </ul>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero container">
+        <div class="hero-grid">
+            <div class="hero-left fade-in">
+                <div class="hero-tag">AI & ML Engineer</div>
+                <h1 class="hero-title" data-bind="profile.name">Sonali Deb</h1>
+                <div class="hero-subtitle">
+                    <span data-bind="profile.title">Data Science & Artificial Intelligence Engineer</span>
+                </div>
+                <p class="hero-desc" data-bind="profile.summary">
+                    A dedicated Computer Science and Engineering professional specializing in Artificial Intelligence and Machine Learning. Proven expertise in architecting intelligent systems, multi-agent orchestration layers, and computer vision applications.
+                </p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn btn-primary">View Featured Projects ↗</a>
+                    <button onclick="toggleConnectDrawer()" class="btn btn-secondary">Get In Touch</button>
+                </div>
+            </div>
+            
+            <div class="hero-right fade-in" style="animation-delay: 0.2s;">
+                <div class="profile-art-container">
+                    <div class="profile-art-inner">🚀</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="container">
+        <div class="section-header">
+            <div class="section-subtitle">Core Capabilities</div>
+            <h2 class="section-title">Technical Expertise</h2>
+        </div>
+        <div class="skills-grid" id="skills-grid">
+            <!-- Rendered Dynamically via app.js -->
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="container">
+        <div class="section-header">
+            <div class="section-subtitle">Work Portfolio</div>
+            <h2 class="section-title">Featured Engineering Projects</h2>
+        </div>
+
+        <!-- Filter Tags -->
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            <button class="filter-btn" data-filter="ai-ml">AI & Computer Vision</button>
+            <button class="filter-btn" data-filter="web-apps">Multi-Agent & Web</button>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+            <!-- Rendered Dynamically via app.js -->
+        </div>
+    </section>
+
+    <!-- UI/UX Design Showcase -->
+    <section id="showcase" class="container">
+        <div class="section-header">
+            <div class="section-subtitle">Design Architecture</div>
+            <h2 class="section-title">UI/UX Design Portfolio</h2>
+        </div>
+        <div class="glass-panel showcase-panel fade-in">
+            <div class="showcase-content">
+                <div class="figma-badge">
+                    <span>❖</span> Figma Prototype
+                </div>
+                <h3 class="showcase-title">Figma Interactive Mockup</h3>
+                <p class="showcase-desc" data-bind="profile.figmaDesc">
+                    View Case Study & Wireframes (Google UX Design Professional Certificate - Foundations & User Research).
+                </p>
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <a href="https://www.figma.com/proto/fWnm391SYnSgpqhk8HzcnG/Untitled?node-id=3-2&starting-point-node-id=3%3A2&t=LUQxetgC1n4r4XjV-1" target="_blank" class="btn btn-primary">Figma Link ↗</a>
+                    <span class="body-edit-only" style="font-size: 0.85rem; color: var(--text-light)">
+                        Link: <span contenteditable="true" data-bind="profile.figmaLink" style="border-bottom:1px dotted;">https://www.figma.com/proto/...</span>
+                    </span>
+                </div>
+            </div>
+            <div class="showcase-preview" id="figma-iframe-container">
+                <!-- Rendered dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Sections (Experience & Education) -->
+    <section id="experience" class="container">
+        <div class="timeline-grid">
+            <!-- Experience Column -->
+            <div class="timeline-column" id="timeline-experience">
+                <h3 class="timeline-column-header">
+                    <span>💼</span> Professional Experience
+                </h3>
+                <div class="timeline-list">
+                    <!-- Rendered Dynamically -->
+                </div>
+            </div>
+
+            <!-- Education Column -->
+            <div class="timeline-column" id="timeline-education">
+                <h3 class="timeline-column-header">
+                    <span>🎓</span> Education
+                </h3>
+                <div class="timeline-list">
+                    <!-- Rendered Dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications & Achievements -->
+    <section id="achievements" class="container">
+        <div class="section-header">
+            <div class="section-subtitle">Credentials & Milestones</div>
+            <h2 class="section-title">Certifications & Achievements</h2>
+        </div>
+        
+        <h3 style="margin-bottom: 24px; font-size: 1.4rem;">Licenses & Certifications</h3>
+        <div class="certs-grid" id="certs-grid" style="margin-bottom: 50px;">
+            <!-- Rendered Dynamically -->
+        </div>
+
+        <h3 style="margin-bottom: 24px; font-size: 1.4rem;">Achievements & Hackathons</h3>
+        <div class="certs-grid" id="achievements-grid">
+            <!-- Rendered Dynamically -->
+        </div>
+    </section>
+
+    <!-- Languages & Interests -->
+    <section id="details" class="container">
+        <div class="timeline-grid">
+            <div class="timeline-column">
+                <h3 class="timeline-column-header">
+                    <span>🌐</span> Languages
+                </h3>
+                <div id="languages-list" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                    <!-- Rendered Dynamically -->
+                </div>
+            </div>
+            
+            <div class="timeline-column">
+                <h3 class="timeline-column-header">
+                    <span>🎨</span> Personal Interests
+                </h3>
+                <div id="interests-list" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                    <!-- Rendered Dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action Footer -->
+    <section id="connect" class="contact-section container">
+        <div class="glass-panel contact-content fade-in" style="padding: 50px;">
+            <h2 style="font-size: 2.2rem; line-height: 1.2;">Let's Build Something Intelligent</h2>
+            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
+                Currently accepting freelance engineering opportunities, specialized consulting, and custom AI integration projects.
+            </p>
+            <button onclick="toggleConnectDrawer()" class="btn btn-primary" style="padding: 12px 30px; font-size: 1rem; border-radius: 30px;">Send a Message</button>
+            
+            <div class="contact-socials">
+                <a href="https://github.com" target="_blank" class="social-pill">💻 GitHub</a>
+                <a href="https://linkedin.com" target="_blank" class="social-pill">💼 LinkedIn</a>
+                <a href="https://truelancer.com" target="_blank" class="social-pill">🚀 Truelancer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Standard Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Sonali Deb. All rights reserved. Self-hosted client link. Designed with HSL Sweet Pink & Cream Aesthetics.</p>
+        </div>
+    </footer>
+
+    <!-- Copy Sharing Link Modal -->
+    <div class="modal" id="share-modal">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h3 style="font-size:1.3rem;">Share Portfolio</h3>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    Your customized edits have been compressed and encoded into the URL. Copy this link to share your portfolio with clients in <strong>Read-Only</strong> mode.
+                </p>
+                <div class="url-box">
+                    <input type="text" id="share-url-input" class="url-input" readonly>
+                    <button id="copy-btn" class="btn btn-primary btn-copy" onclick="copyShareUrl()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Drawer -->
+    <div class="drawer" id="connect-drawer">
+        <div class="drawer-header">
+            <h3 style="font-size: 1.4rem;">Get in Touch</h3>
+            <span class="drawer-close" onclick="toggleConnectDrawer()">&times;</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">
+            Submit the form below, and I will be notified. Or request contact details directly over the freelance platform.
+        </p>
+        <form class="contact-form" onsubmit="submitContactForm(event)">
+            <div class="form-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" id="contact-name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label for="contact-email">Email Address</label>
+                <input type="email" id="contact-email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="contact-message">Project Brief / Message</label>
+                <textarea id="contact-message" rows="6" placeholder="Describe your project, timeline, and requirements..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">Send Message</button>
+        </form>
+    </div>
+
+    <!-- Javascript -->
+    <script src="app.js"></script>
+</body>
+</html>
