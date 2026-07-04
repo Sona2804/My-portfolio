@@ -175,7 +175,7 @@ function setValueByPath(obj, path, value) {
     }
 }
 
-// Save Current State to LocalStorage
+// Save Current State to LocalStorage (Draft)
 function saveLocalDraft() {
     if (!isViewMode) {
         localStorage.setItem('sonali_portfolio_draft', JSON.stringify(state));
@@ -196,7 +196,7 @@ async function initApp() {
             isViewMode = true; // shared links are always read-only
         } else {
             alert("Could not load shared portfolio content. Loading default template.");
-            loadTemplate(DEFAULT_DATA);
+            state = JSON.parse(JSON.stringify(DEFAULT_DATA));
         }
     } else {
         // Checking URL params for view toggles or local storage
