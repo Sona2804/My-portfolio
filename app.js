@@ -809,11 +809,30 @@ function setupNavInteractions() {
     });
 }
 
-// ----------------------------------------------------
-// Toolbar / Control Actions (Editor UI)
-// ----------------------------------------------------
-async function generateShareLink(forceCustom = false) {
-    const btn = document.querySelector('[onclick="generateShareLink()"]') || document.querySelector('[onclick="generateShareLink(true)"]');
+// JSONP Helper for CORS-free API calls
+function fetchJSONP(url, callbackName) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `${url}&callback=${callbackName}`;
+        
+        window[callbackName] = (data) => {
+            resolve(data);
+            script.remove();
+            delete window[callbackName];
+        };
+        
+        script.onerror = () => {
+            reject(new Error("JSONP request failed"));
+            script.remove();
+            delete window[callbackName];
+        };
+        
+        document.body.appendChild(script);
+    });
+}
+
+async function generateShareLink() {
+    const btn = document.querySelector('[onclick="generateShareLink()"]');
     const originalText = btn.innerHTML;
     btn.innerHTML = 'Compiling...';
     
@@ -822,34 +841,20 @@ async function generateShareLink(forceCustom = false) {
     
     let displayUrl = shareUrl;
     
-    const aliasInput = document.getElementById('custom-alias-input');
-    const customAlias = aliasInput ? aliasInput.value.trim().replace(/\s+/g, '_') : '';
-    
-    let apiUrl = "https://is.gd/create.php?format=json&url=" + encodeURIComponent(shareUrl);
-    if (customAlias) {
-        apiUrl += "&shorturl=" + encodeURIComponent(customAlias);
-    }
-    
+    // We try to shorten it using is.gd JSONP (bypass CORS)
     try {
         btn.innerHTML = 'Shortening...';
-        const response = await fetch("https://corsproxy.io/?" + encodeURIComponent(apiUrl));
-        const data = await response.json();
-        if (data.shorturl) {
+        const callbackName = "isgd_" + Math.random().toString(36).substr(2, 9);
+        const urlToCall = "https://is.gd/create.php?format=jsonp&url=" + encodeURIComponent(shareUrl);
+        
+        const data = await fetchJSONP(urlToCall, callbackName);
+        if (data && data.shorturl) {
             displayUrl = data.shorturl;
-            if (forceCustom) {
-                alert("🎉 Short link created successfully!");
-            }
-        } else if (data.errormessage) {
+        } else if (data && data.errormessage) {
             console.warn("Shortener error response:", data.errormessage);
-            if (forceCustom) {
-                alert("❌ Custom alias is already taken or invalid. Try a different name!");
-            }
         }
     } catch (e) {
         console.warn("Failed to reach URL shortener API, falling back to long URL", e);
-        if (forceCustom) {
-            alert("❌ Network error connecting to shortening server.");
-        }
     }
     
     btn.innerHTML = originalText;
